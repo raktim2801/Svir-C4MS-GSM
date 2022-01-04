@@ -14,21 +14,22 @@ Latest version (works with python 3.6 onwards) of __scobra metabolic modelling__
 This project utilizes __scobra__, __cobra__, __os__, __pickle__, __csv__, __numpy__ and __pandas__ modules.
 
 _____________
+_____________
 
 #### Simulation
-All input files (Model (in excel format) and Gene Expression libraries are stored in
-__'.\\Data'__ folder)
+>All input files (Model (in excel format) and Gene Expression libraries are stored in
+>__'.\\Data'__ folder)
+>
+>__Model File__:
+>  - '.\\Data\\setaria_c4x4_v12a.xls'
+>
+>__Gene Expression values__:
+>  -  '.\\Data\\GSMx2rxn_baseGE_N0_edited.txt',
+>  -  '.\\Data\\GSMx2rxn_lwrGE_N0_edited.txt',
+>  -  '.\\Data\\GSMx2rxn_midGE_N0_edited.txt',
+>  -  '.\\Data\\GSMx2rxn_tipGE_N0_edited.txt'
 
-__Model File__:
-  - '.\\Data\\setaria_c4x4_v12a.xls'
 
-__Gene Expression values__:
-  -  '.\\Data\\GSMx2rxn_baseGE_N0_edited.txt',
-  -  '.\\Data\\GSMx2rxn_lwrGE_N0_edited.txt',
-  -  '.\\Data\\GSMx2rxn_midGE_N0_edited.txt',
-  -  '.\\Data\\GSMx2rxn_tipGE_N0_edited.txt'
-
-_____________
 __Simulation Guide__: (also given in **jupyter notebook** format) 'Model_simulation_guide.ipynb'
 
 
@@ -59,4 +60,10 @@ with open('wGE_Sol.csv','w') as outfile:
         writer.writerow([key, value])
 ```
 
-If _SaveModel_, _SaveSols_ flags are __True__ in ```TwoStepBiomassGradientSolve```, it will create a __Results__ folder inside working directory and save (along with pickle dump) the models or the solutions or both inside that folder.
+If _SaveModel_, _SaveSols_ flags are __True__ in ```TwoStepBiomassGradientSolve```, it will create a __Results__ folder inside working directory and save (along with ```pickle``` dump) the models or the solutions or both inside that folder.
+
+The ```pickle``` files (extension _.pkl_) can be loaded using the following commands..
+```python
+with open('.\\Results\\wGE_Model_run6.pkl', 'rb') as ff:
+    wGESolved_M = setaria_final.pickle.load(ff)
+```
