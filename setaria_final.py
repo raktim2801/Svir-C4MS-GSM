@@ -267,7 +267,9 @@ def BlockExtraRxns(m, rxnlist=[]):
 
 
 
-def TwoStepBiomassGradientSolve(m, P=200.0, r_tmlb=[], EqualPhoton=True, DWt='Mean', Path='.\Data',
+def TwoStepBiomassGradientSolve(m, P=200.0, r_tmlb=[], EqualPhoton=True, DWt='Mean',
+                                Path='.\Data', SaveModel= False, ReturnSols= False,
+                                SaveSols= False,
                                 GEbase="GSMx2rxn_baseGE_N0_edited.txt",
                                 GElwr="GSMx2rxn_lwrGE_N0_edited.txt",
                                 GEmid="GSMx2rxn_midGE_N0_edited.txt",
@@ -284,6 +286,9 @@ def TwoStepBiomassGradientSolve(m, P=200.0, r_tmlb=[], EqualPhoton=True, DWt='Me
     GElwr=os.path.join(Path,GElwr)
     GEmid=os.path.join(Path,GEmid)
     GEtip=os.path.join(Path,GEtip)
+
+    if SaveModel or SaveSols:
+        os.mkdir('.\\Results')
 
 
     m4=m.copy()
@@ -326,9 +331,18 @@ def TwoStepBiomassGradientSolve(m, P=200.0, r_tmlb=[], EqualPhoton=True, DWt='Me
     M_split1.PrintSol('_CP')
     print("\n")
 
-    M_split1.WriteModel('After_Run_BioMax_model_run6.xlsx')
-    with open('BioMax_Model_run6.pkl', 'wb') as outf:
-        pickle.dump(M_split1, outf)
+    if SaveModel:
+        M_split1.WriteModel('.\\Results\\After_Run_BioMax_model_run6.xlsx')
+        with open('.\\Results\\BioMax_Model_run6.pkl', 'wb') as outf:
+            pickle.dump(M_split1, outf)
+    if SaveSols:
+        with open('.\\Results\\BioMax_Sol_run6.pkl', 'wb') as outf2:
+            pickle.dump(SolwoGEBioMax, outf2)
+        with open('.\\Results\\BioMax_Sol_run6.csv','w') as outf3:
+            writer = csv.writer(outf3, delimiter='\t')
+            for key, value in SolwoGEBioMax.items():
+                writer.writerow([key, value])
+
     ### SET Biomass values for GE Integration
     BMax=SolwoGEBioMax.Filter('Cell_biomass_BS_tip')
     Bvalue=BMax['Cell_biomass_BS_tip']
@@ -371,9 +385,21 @@ def TwoStepBiomassGradientSolve(m, P=200.0, r_tmlb=[], EqualPhoton=True, DWt='Me
     print("\n\nCPs\n")
     M_split2.PrintSol('_CP')
 
+    if SaveModel:
+        M_split2.WriteModel('.\\Results\\After_Run_wGE_model_run6.xlsx')
+        with open('.\\Results\\wGE_Model_run6.pkl', 'wb') as outff:
+            pickle.dump(M_split2, outff)
+    if SaveSols:
+        with open('.\\Results\\wGE_Sol_run6.pkl', 'wb') as outff2:
+            pickle.dump(SolwGE2, outff2)
+        with open('.\\Results\\wGE_Sol_run6.csv','w') as outff3:
+            writer = csv.writer(outff3, delimiter='\t')
+            for key, value in SolwGE2.items():
+                writer.writerow([key, value])
 
-    M_split2.WriteModel('After_Run_wGE_model_run6.xlsx')
-    with open('wGE_Model_run6.pkl', 'wb') as outff:
-        pickle.dump(M_split2, outff)
 
-    return SolwoGEBioMax, SolwGE2
+
+    if ReturnSols:
+        return SolwoGEBioMax, SolwGE2
+    else:
+        return M_split2, SolwGE2
